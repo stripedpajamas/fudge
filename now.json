@@ -1,0 +1,34 @@
+
+{
+  "version": 2,
+  "name": "fudge",
+  "builds": [
+    { "src": "api/**/*.js", "use": "@now/node" }
+  ],
+  "env": {
+    "AWS_AK": "@fudge_aws_access_key",
+    "AWS_SK": "@fudge_aws_secret_key"
+  },
+  "routes": [
+    {
+      "src": "/api/transactions",
+      "dest": "/api/transactions/get.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/transactions",
+      "dest": "/api/transactions/delete.js",
+      "methods": ["DELETE"]
+    },
+    {
+      "src": "/api/transactions",
+      "dest": "/api/transactions/update.js",
+      "methods": ["PUT"]
+    },
+    {
+      "src": "/api/transactions",
+      "dest": "/api/transactions/add.js",
+      "methods": ["POST"]
+    }
+  ]
+}
