@@ -44,34 +44,31 @@ module.exports = async (req, res) => {
       return
     }
 
-    const transaction = { pending, amount, date, vendor, category }
+    const transaction = {
+      id: getTransactionKey(),
+      data: { pending, amount, date, vendor, category }
+    }
 
-    // put the transaction into dynamo
-    await dyn.put({
-      TableName: TABLE_NAME,
-      Item: {
-        id: getTransactionKey(),
-        data: transaction
-      }
-    }).promise()
-
-    // update the category with the amount spent
-    const { Attributes: updatedCategory } = await dyn.update({
-      TableName: TABLE_NAME,
-      Key: { id: getCategoryKey(category) },
-      UpdateExpression: 'set #data = :data',
-      ExpressionAttributeNames: { '#data': 'data' },
-      ExpressionAttributeValues: {
-        ':data': {
-          ...retrievedCategory.data,
-          spent: retrievedCategory.data.spent + transaction.amount
+    await dyn.transactWrite({
+      TransactItems: [{
+        Put: {
+          TableName: TABLE_NAME,
+          Item: transaction
         }
-      },
-      ReturnValues: 'ALL_NEW'
+      }, {
+        Update: {
+          TableName: TABLE_NAME,
+          Key: { id: getCategoryKey(category) },
+          UpdateExpression: 'set #data.#spent = #data.#spent + :amount',
+          ExpressionAttributeNames: { '#data': 'data', '#spent': 'spent' },
+          ExpressionAttributeValues: { ':amount': transaction.data.amount },
+          ReturnValues: 'ALL_NEW'
+        }
+      }]
     }).promise()
 
-    // done - return the updated category to the client
-    send(res, 200, updatedCategory)
+    // done
+    send(res, 200, { transaction })
   } catch (e) {
     console.log(e)
     send(res, 500)
