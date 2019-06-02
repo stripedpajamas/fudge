@@ -3,7 +3,7 @@
   "version": 2,
   "name": "fudge",
   "builds": [
-    { "src": "api/**/*.js", "use": "@now/node" }
+    { "src": "api/transactions/*.js", "use": "@now/node" }
   ],
   "env": {
     "AWS_AK": "@fudge_aws_access_key",
