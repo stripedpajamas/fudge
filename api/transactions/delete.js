@@ -1,11 +1,8 @@
 const AWS = require('aws-sdk')
 const { json, send } = require('micro')
+const { validateRequest } = require('../utils')
 const {
-  getCategoryKey,
-  validateRequest
-} = require('../utils')
-const {
-  TABLE_NAME, REGION
+  TRANS_TABLE, CATS_TABLE, REGION
 } = require('../constants')
 
 AWS.config.update({
@@ -27,16 +24,16 @@ module.exports = async (req, res) => {
       send(res, 400)
       return
     }
-    const { id } = data
-    if (!id) {
+    const { id, timestamp } = data
+    if (!id || !timestamp) {
       send(res, 400)
       return
     }
 
     // get transaction
     const { Item: transaction } = await dyn.get({
-      TableName: TABLE_NAME,
-      Key: { id }
+      TableName: TRANS_TABLE,
+      Key: { id, timestamp }
     }).promise()
     if (!transaction) {
       send(res, 400)
@@ -47,21 +44,20 @@ module.exports = async (req, res) => {
     await dyn.transactWrite({
       TransactItems: [{
         Delete: {
-          TableName: TABLE_NAME,
-          Key: { id }
+          TableName: TRANS_TABLE,
+          Key: { id, timestamp }
         }
       }, {
         Update: {
-          TableName: TABLE_NAME,
-          Key: { id: getCategoryKey(transaction.data.category) },
-          UpdateExpression: 'set #data.#spent = #data.#spent - :amount',
-          ExpressionAttributeNames: { '#data': 'data', '#spent': 'spent' },
-          ExpressionAttributeValues: { ':amount': transaction.data.amount }
+          TableName: CATS_TABLE,
+          Key: { name: transaction.category },
+          UpdateExpression: 'set #spent = #spent - :amount',
+          ExpressionAttributeNames: { '#spent': 'spent' },
+          ExpressionAttributeValues: { ':amount': transaction.amount }
         }
       }]
     }).promise()
 
-    // done - return the updated category to the client
     send(res, 200)
   } catch (e) {
     console.log(e)

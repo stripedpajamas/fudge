@@ -3,14 +3,6 @@ const { timingSafeEqual } = require('crypto')
 const { F_AUTH_TOKEN } = process.env
 const authToken = Buffer.from(F_AUTH_TOKEN, 'hex')
 
-exports.getCategoryKey = function getCategoryKey (category) {
-  return `c_${category}`
-}
-
-exports.getTransactionKey = function getTransactionKey () {
-  return `t_${Date.now()}`
-}
-
 exports.validateRequest = function validateRequest (req) {
   // only allow requests with the proper auth header
   const authHeader = req.headers.authorization

@@ -4,7 +4,9 @@
   "author": "Peter Squicciarini <stripedpajamas273@gmail.com>",
   "dependencies": {
     "aws-sdk": "^2.466.0",
-    "micro": "^9.3.4"
+    "micro": "^9.3.4",
+    "micro-query": "^0.3.0",
+    "ulid": "^2.3.0"
   },
   "devDependencies": {
     "standard": "^12.0.1"
