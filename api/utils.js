@@ -1,7 +1,7 @@
 const { timingSafeEqual } = require('crypto')
 
-const { AUTH_TOKEN } = process.env
-const authToken = Buffer.from(AUTH_TOKEN, 'hex')
+const { F_AUTH_TOKEN } = process.env
+const authToken = Buffer.from(F_AUTH_TOKEN, 'hex')
 
 exports.getCategoryKey = function getCategoryKey (category) {
   return `c_${category}`

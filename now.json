@@ -8,7 +8,7 @@
   "env": {
     "AWS_AK": "@fudge_aws_access_key",
     "AWS_SK": "@fudge_aws_secret_key",
-    "AUTH_TOKEN": "@fudge_auth_token"
+    "F_AUTH_TOKEN": "@fudge_auth_token"
   },
   "routes": [
     {
