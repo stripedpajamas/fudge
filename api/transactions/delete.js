@@ -1,7 +1,8 @@
 const AWS = require('aws-sdk')
 const { json, send } = require('micro')
 const {
-  getCategoryKey
+  getCategoryKey,
+  validateRequest
 } = require('../utils')
 const {
   TABLE_NAME, REGION
@@ -18,6 +19,7 @@ AWS.config.update({
 const dyn = new AWS.DynamoDB.DocumentClient()
 
 module.exports = async (req, res) => {
+  if (!validateRequest(req)) return send(res, 401)
   try {
     // get transaction params from request object
     const data = await json(req)

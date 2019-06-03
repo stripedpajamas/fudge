@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk')
 const { send } = require('micro')
 const {
+  validateRequest
+} = require('../utils')
+const {
   TABLE_NAME, REGION
 } = require('../constants')
 
@@ -15,6 +18,7 @@ AWS.config.update({
 const dyn = new AWS.DynamoDB.DocumentClient()
 
 module.exports = async (req, res) => {
+  if (!validateRequest(req)) return send(res, 401)
   // scan table and filter on transactions
   const { Items: transactions } = await dyn.scan({
     TableName: TABLE_NAME,
