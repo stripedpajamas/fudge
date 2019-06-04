@@ -41,6 +41,11 @@
       "src": "/api/categories",
       "dest": "/api/categories/add.js",
       "methods": ["POST", "PUT"]
+    },
+    {
+      "src": "/api/categories",
+      "dest": "/api/categories/delete.js",
+      "methods": ["DELETE"]
     }
   ]
 }
