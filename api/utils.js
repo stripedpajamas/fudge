@@ -10,6 +10,6 @@ exports.validateRequest = function validateRequest (req) {
   const token = authHeader.split(' ').pop()
   if (!token) return false
   const tokenBuff = Buffer.from(token, 'hex')
-  if (tokenBuff.length != authToken.length) return false
+  if (tokenBuff.length !== authToken.length) return false
   return timingSafeEqual(tokenBuff, authToken)
 }
