@@ -36,6 +36,11 @@
       "src": "/api/categories",
       "dest": "/api/categories/get.js",
       "methods": ["GET"]
+    },
+    {
+      "src": "/api/categories",
+      "dest": "/api/categories/add.js",
+      "methods": ["POST"]
     }
   ]
 }
