@@ -4,7 +4,8 @@
   "name": "fudge",
   "builds": [
     { "src": "api/transactions/*.js", "use": "@now/node" },
-    { "src": "api/categories/*.js", "use": "@now/node" }
+    { "src": "api/categories/*.js", "use": "@now/node" },
+    { "src": "static/package.json", "use": "@now/static-build" }
   ],
   "env": {
     "AWS_AK": "@fudge_aws_access_key",
@@ -46,6 +47,15 @@
       "src": "/api/categories",
       "dest": "/api/categories/delete.js",
       "methods": ["DELETE"]
-    }
+    },
+    { "src": "/assets/(.*)",
+      "headers": {
+        "cache-control": "s-maxage=31536000,immutable"
+      },
+      "dest": "/static/assets/$1"
+    },
+    { "src": "/(.*)/(.*)(map|js|css|br|deflate|gz)$", "dest": "/static/$1/$2$3" },
+    { "src": "/(.*)\\.(json|js|br|deflate|gz)$", "dest": "/static/$1.$2" },
+    { "src": "/(.*)", "dest": "/static/index.html" }
   ]
 }
