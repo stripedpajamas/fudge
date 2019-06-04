@@ -40,7 +40,7 @@
     {
       "src": "/api/categories",
       "dest": "/api/categories/add.js",
-      "methods": ["POST"]
+      "methods": ["POST", "PUT"]
     }
   ]
 }
