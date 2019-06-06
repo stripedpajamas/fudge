@@ -3,6 +3,7 @@
   "version": 2,
   "name": "fudge",
   "builds": [
+    { "src": "api/index.js", "use": "@now/node" },
     { "src": "api/transactions/*.js", "use": "@now/node" },
     { "src": "api/categories/*.js", "use": "@now/node" },
     { "src": "static/package.json", "use": "@now/static-build" }
@@ -13,6 +14,11 @@
     "F_AUTH_TOKEN": "@fudge_auth_token"
   },
   "routes": [
+    {
+      "src": "/api/check",
+      "dest": "/api/index.js",
+      "methods": ["GET"]
+    },
     {
       "src": "/api/transactions",
       "dest": "/api/transactions/get.js",

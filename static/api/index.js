@@ -34,8 +34,18 @@ module.exports = async (password, cookieToken) => {
   }
 
   return {
-    getTransactions () {
-      fetch('/api/transactions', getOptions('get'))
+    getToken () {
+      return token
+    },
+    async checkAuth () {
+      const res = await fetch('/api/check', getOptions('get'))
+      return res.status === 200
+    },
+    async getTransactions () {
+      return fetch('/api/transactions', getOptions('get'))
+    },
+    async getCategories () {
+      return fetch('/api/categories', getOptions('get'))
     }
   }
 }

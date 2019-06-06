@@ -1,9 +1,7 @@
 const css = require('sheetify')
 const choo = require('choo')
 
-const withLayout = require('./components/layout')
-
-const loginView = withLayout(require('./views/login'), 'Login')
+const loginView = require('./views/login')
 
 const withAuth = handler => (state, emit) => state.authenticated
   ? loginView(state, emit)
