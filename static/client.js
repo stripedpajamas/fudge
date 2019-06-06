@@ -1,12 +1,20 @@
+const css = require('sheetify')
 const choo = require('choo')
+
+const withLayout = require('./components/layout')
+
+const loginView = withLayout(require('./views/login'), 'Login')
+
+const withAuth = handler => (state, emit) => state.authenticated
+  ? loginView(state, emit)
+  : handler(state, emit)
+
+css('tachyons')
 const app = choo()
 
-app.use(require('./stores/home'))
-app.route('/', require('./pages/home'))
+app.use(require('choo-devtools')())
+app.use(require('./stores/login'))
 
-// Support for Server-Side Rendering
-if (module.parent) {
-  module.exports = app
-} else {
-  app.mount('body')
-}
+app.route('/', loginView)
+
+module.exports = app.mount('body')
