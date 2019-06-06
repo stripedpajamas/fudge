@@ -18,7 +18,7 @@ module.exports = async function (state, emitter) {
     // update the UI to show we are trying to login
     state.login.loading = true
     state.login.usingCookie = true
-    emitter.emit('render')
+    emitter.emit(state.events.RENDER)
 
     const api = await API(null, cookieToken)
     const authenticated = await api.checkAuth()
@@ -28,20 +28,21 @@ module.exports = async function (state, emitter) {
       state.login.authenticated = false
       state.login.loading = false
       state.login.error = true
-    } else {
-      state.login.authenticated = true
-      state.login.loading = false
-      state.login.error = false
-      state.api = api
+      emitter.emit(state.events.RENDER)
+      return
     }
-    emitter.emit('render')
+    state.login.authenticated = true
+    state.login.loading = false
+    state.login.error = false
+    state.api = api
+    emitter.emit(state.events.PUSHSTATE, '/dashboard')
   }
 
   emitter.on('login:authenticate', async function ({ password }) {
     state.login.usingCookie = false
     state.login.error = false
     state.login.loading = true
-    emitter.emit('render')
+    emitter.emit(state.events.RENDER)
 
     const api = await API(password)
     const authenticated = await api.checkAuth()
@@ -49,13 +50,14 @@ module.exports = async function (state, emitter) {
       state.login.authenticated = false
       state.login.loading = false
       state.login.error = true
-    } else {
-      // password worked -- set a cookie
-      Cookies.set('fudge', api.getToken())
-      state.login.authenticated = true
-      state.login.loading = false
-      state.login.error = false
+      emitter.emit(state.events.RENDER)
+      return
     }
-    emitter.emit('render')
+    // password worked -- set a cookie
+    Cookies.set('fudge', api.getToken())
+    state.login.authenticated = true
+    state.login.loading = false
+    state.login.error = false
+    emitter.emit(state.events.PUSHSTATE, '/dashboard')
   })
 }
